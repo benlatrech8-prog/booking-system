@@ -18,4 +18,5 @@ Three tables:
 - Bookings only during opening hours (08:00–20:00).
 
 ## Status
-🚧 In progress: database layer done, booking logic next.
+✅ Done: database, add clients/services, booking with double-booking check, tests
+🚧 Next: opening hours (08:00–20:00), then a REST API with FastAPI
