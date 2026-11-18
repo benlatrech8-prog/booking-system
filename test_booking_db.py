@@ -24,6 +24,7 @@ def test_add_booking():
     assert db.add_booking(2, 1, "2026-11-17", "11:00") == True
     assert db.add_booking(2, 2, "2026-11-17", "07:30") == False
     assert db.add_booking(2, 2, "2026-11-17", "19:00") == True
+    assert db.add_booking(2, 99, "2026-11-17", "07:30") == False
     count = db.conn.execute("SELECT COUNT(*) FROM bookings").fetchone()[0]
     assert count == 3
 if __name__ =="__main__":

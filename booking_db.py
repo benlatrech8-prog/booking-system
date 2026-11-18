@@ -45,6 +45,8 @@ class BookingDB():
         cur= self.conn.cursor()
         cur.execute("SELECT duration FROM services WHERE id = ?",(service_id,))
         rows = cur.fetchone()
+        if rows is None:
+            return None
         return rows[0]
 
     def is_free(self, date,new_start, new_end):
@@ -59,6 +61,8 @@ class BookingDB():
 
     def add_booking(self,client_id, service_id, date, start_time):
         duration = self.get_duration(service_id)
+        if duration is None :
+            return False
         end_t = add_minutes(start_time, duration)
         if start_time < "08:00" or end_t > "20:00":
             return False
@@ -85,6 +89,7 @@ if __name__ == "__main__":
     print(db.add_booking(1, 2, "2026-11-17", "10:00"))   # True  ✅ Ali, full wash 10:00-11:00
     print(db.add_booking(2, 1, "2026-11-17", "10:30"))   # False ❌ collides
     print(db.add_booking(2, 1, "2026-11-17", "11:00"))   # True  ✅ touches only
+    print(db.add_booking(1, 99, "2026-11-18", "12:00"))
     print(db.conn.execute("SELECT * FROM bookings").fetchall())
     print("done")
 
