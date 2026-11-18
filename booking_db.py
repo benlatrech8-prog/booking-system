@@ -75,21 +75,40 @@ class BookingDB():
             """,(client_id, service_id, date, start_time,end_t))
         self.conn.commit()
         return True
+
+    def bookings_on(self, date):
+        cur= self.conn.cursor()
+        cur.execute("""SELECT clients.name, services.type, bookings.start_time, bookings.end_time
+        FROM bookings
+        INNER JOIN clients ON bookings.client_id = clients.id
+        INNER JOIN services ON bookings.service_id = services.id
+        WHERE bookings.date = ?
+        ORDER BY bookings.start_time
+        """,(date,))
+        rows = cur.fetchall()
+        result = []
+        for name, service, start, end in rows:
+            result.append({"client": name, "service": service, "start": start, "end": end })
+        return result
+
+
 if __name__ == "__main__":
     db = BookingDB(":memory:")
-    print(db.conn.execute("SELECT name FROM sqlite_master").fetchall())
+    #print(db.conn.execute("SELECT name FROM sqlite_master").fetchall())
     db.add_client("nedjem", "+300000835", "ben@example.com")
     db.add_client("mays", "+49100000775", "a@example.com")
     db.add_service("wash", 30, 25)
     db.add_service("full wash", 60, 45)
-    print(db.conn.execute("SELECT * FROM clients").fetchall())
-    print(db.conn.execute("SELECT * FROM services").fetchall())
+    #print(db.conn.execute("SELECT * FROM clients").fetchall())
+    #print(db.conn.execute("SELECT * FROM services").fetchall())
     assert db.get_duration(1) == 30
     assert db.get_duration(2) == 60
     print(db.add_booking(1, 2, "2026-11-17", "10:00"))   # True  ✅ Ali, full wash 10:00-11:00
     print(db.add_booking(2, 1, "2026-11-17", "10:30"))   # False ❌ collides
     print(db.add_booking(2, 1, "2026-11-17", "11:00"))   # True  ✅ touches only
     print(db.add_booking(1, 99, "2026-11-18", "12:00"))
-    print(db.conn.execute("SELECT * FROM bookings").fetchall())
+    #print(db.conn.execute("SELECT * FROM bookings").fetchall())
+    print(db.bookings_on("2026-11-17"))
+    print(db.bookings_on("2030-01-01"))    # → []
     print("done")
 
