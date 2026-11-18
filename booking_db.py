@@ -60,6 +60,8 @@ class BookingDB():
     def add_booking(self,client_id, service_id, date, start_time):
         duration = self.get_duration(service_id)
         end_t = add_minutes(start_time, duration)
+        if start_time < "08:00" or end_t > "20:00":
+            return False
         free = self.is_free(date,start_time, end_t)
         if not free :
             return False

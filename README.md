@@ -19,4 +19,4 @@ Three tables:
 
 ## Status
 ✅ Done: database, add clients/services, booking with double-booking check, tests
-🚧 Next: opening hours (08:00–20:00), then a REST API with FastAPI
+✅ Done: opening hours (08:00–20:00), then a REST API with FastAPI
