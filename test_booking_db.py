@@ -25,13 +25,13 @@ def test_add_booking():
     db.add_service("full wash", 60, 45)     # id 2
 
     # Act + Assert
-    assert db.add_booking(1, 2, "2026-11-17", "10:00") == True     # 10:00-11:00
-    assert db.add_booking(2, 1, "2026-11-17", "10:30") == False    # collides
-    assert db.add_booking(2, 1, "2026-11-17", "11:00") == True     # touches only
-    assert db.add_booking(2, 2, "2026-11-17", "07:30") == False    # before opening
-    assert db.add_booking(2, 2, "2026-11-17", "19:45") == False    # ends 20:45
-    assert db.add_booking(2, 2, "2026-11-17", "19:00") == True     # ends exactly 20:00
-    assert db.add_booking(1, 99, "2026-11-17", "12:00") == False   # unknown service
+    assert db.add_booking(1, 2, "2026-11-17", "10:00") == "ok"     # 10:00-11:00
+    assert db.add_booking(2, 1, "2026-11-17", "10:30") == "taken"  # collides
+    assert db.add_booking(2, 1, "2026-11-17", "11:00") == "ok"     # touches only
+    assert db.add_booking(2, 2, "2026-11-17", "07:30") == "closed" # before opening
+    assert db.add_booking(2, 2, "2026-11-17", "19:45") == "closed" # ends 20:45
+    assert db.add_booking(2, 2, "2026-11-17", "19:00") == "ok"     # ends exactly 20:00
+    assert db.add_booking(1, 99, "2026-11-17", "12:00") == "unknown_service"   # unknown service
 
     # check the data too: only the 3 accepted bookings were saved
     count = db.conn.execute("SELECT COUNT(*) FROM bookings").fetchone()[0]

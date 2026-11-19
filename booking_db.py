@@ -62,19 +62,19 @@ class BookingDB():
     def add_booking(self,client_id, service_id, date, start_time):
         duration = self.get_duration(service_id)
         if duration is None :
-            return False
+            return "unknown_service"
         end_t = add_minutes(start_time, duration)
         if start_time < "08:00" or end_t > "20:00":
-            return False
+            return "closed"
         free = self.is_free(date,start_time, end_t)
         if not free :
-            return False
+            return "taken"
         cur = self.conn.cursor()
         cur.execute("""INSERT INTO bookings (client_id, service_id, date, start_time, end_time)
             VALUES (?,?,?,?,?)
             """,(client_id, service_id, date, start_time,end_t))
         self.conn.commit()
-        return True
+        return "ok"
 
     def bookings_on(self, date):
         cur= self.conn.cursor()
