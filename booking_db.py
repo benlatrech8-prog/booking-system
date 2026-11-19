@@ -3,7 +3,7 @@ from time_utils import add_minutes
 
 class BookingDB():
     def __init__(self,file_name):
-        self.conn= sqlite3.connect(file_name)
+        self.conn= sqlite3.connect(file_name, check_same_thread=False)
         self.create_table()
     def create_table(self):
         cur = self.conn.cursor()
@@ -91,7 +91,14 @@ class BookingDB():
             result.append({"client": name, "service": service, "start": start, "end": end })
         return result
 
-
+    def get_services(self):
+        cur = self.conn.cursor()
+        cur.execute("SELECT id, type, duration, price FROM services")
+        rows = cur.fetchall()
+        result = []
+        for service_id, name, duration, price in rows:
+            result.append({"id": service_id, "name": name, "duration": duration, "price": price})
+        return result
 if __name__ == "__main__":
     db = BookingDB(":memory:")
     #print(db.conn.execute("SELECT name FROM sqlite_master").fetchall())
