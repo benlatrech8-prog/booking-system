@@ -59,7 +59,18 @@ class BookingDB():
         else:
             return False
 
+    def client_exists(self, client_id):
+        cur = self.conn.cursor()
+        cur.execute("SELECT name, phone, email FROM clients WHERE clients.id = ?",(client_id,))
+        rows = cur.fetchone()
+        if rows is None:
+            return False
+        else :
+            return True
+
     def add_booking(self,client_id, service_id, date, start_time):
+        if not self.client_exists(client_id):
+            return "unknown_client"
         duration = self.get_duration(service_id)
         if duration is None :
             return "unknown_service"
@@ -117,5 +128,6 @@ if __name__ == "__main__":
     #print(db.conn.execute("SELECT * FROM bookings").fetchall())
     print(db.bookings_on("2026-11-17"))
     print(db.bookings_on("2030-01-01"))    # → []
+    print(db.get_services())
     print("done")
 

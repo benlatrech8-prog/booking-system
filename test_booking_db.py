@@ -32,7 +32,7 @@ def test_add_booking():
     assert db.add_booking(2, 2, "2026-11-17", "19:45") == "closed" # ends 20:45
     assert db.add_booking(2, 2, "2026-11-17", "19:00") == "ok"     # ends exactly 20:00
     assert db.add_booking(1, 99, "2026-11-17", "12:00") == "unknown_service"   # unknown service
-
+    assert db.add_booking(99, 1, "2026-11-17", "12:00") == "unknown_client"    #unknown client
     # check the data too: only the 3 accepted bookings were saved
     count = db.conn.execute("SELECT COUNT(*) FROM bookings").fetchone()[0]
     assert count == 3
