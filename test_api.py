@@ -26,3 +26,63 @@ def test_services():
 
   }
 ]
+
+def test_create_booking():
+    # Arrange: a fresh book with 1 client and 1 service
+
+    main.db = BookingDB(":memory:")
+    main.db.add_client("Ali", "0151 0000000", "ali@example.com")
+    main.db.add_service("wash", 30, 25)
+
+    # Act: POST a booking (json= is the body 📝)
+    response = client.post("/bookings", json={
+        "client_id": 1,
+        "service_id": 1,
+        "date": "2026-11-25",
+        "start_time": "10:00",
+    })
+
+    #assert
+    assert response.status_code == 201
+    assert response.json() == {"message": "Booking created"}
+
+    response = client.post("/bookings", json={
+        "client_id": 1,
+        "service_id": 1,
+        "date": "2026-11-25",
+        "start_time": "10:00",
+    })
+
+    assert response.status_code == 409
+    assert response.json() == {"detail": "This time slot is already taken"}
+
+    response = client.post("/bookings", json={
+        "client_id": 22,
+        "service_id": 1,
+        "date": "2026-11-25",
+        "start_time": "10:00",
+    })
+
+    assert response.status_code == 404
+    assert response.json() == {"detail": "This client doesn't exist"}
+
+    response = client.post("/bookings", json={
+        "client_id": 1,
+        "service_id": 1,
+        "date": "2026-11-25",
+        "start_time": "22:00",
+    })
+
+    assert response.status_code == 400
+    assert response.json() == {"detail": "We are open from 08:00 to 20:00"}
+
+    response = client.post("/bookings", json={
+        "client_id": 1,
+        "service_id": 12,
+        "date": "2026-11-25",
+        "start_time": "",
+    })
+
+    assert response.status_code == 404
+    assert response.json() == {"detail": "This service doesn't exist"}
+
