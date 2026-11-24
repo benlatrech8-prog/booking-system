@@ -57,6 +57,21 @@ def test_bookings_on():
     assert db.bookings_on("2030-01-01") == []      # empty day → empty list, not an error
     db.conn.close()
 
+def test_delete_booking():
+    db = BookingDB(":memory:")
+    db.add_client("Ali", "0151 0000000", "ali@example.com")
+    db.add_client("Sara", "0176 0000000", "sara@example.com")
+    db.add_service("wash", 30, 25)
+    db.add_service("full wash", 60, 45)
+    db.add_booking(2, 1, "2026-11-17", "11:00")    # Sara, added first
+    db.add_booking(1, 2, "2026-11-17", "10:00")    # Ali, added second
+    count = db.conn.execute("SELECT COUNT(*) FROM bookings").fetchone()[0]
+    assert count == 2
+
+    db.delete_booking(1)
+    count = db.conn.execute("SELECT COUNT(*) FROM bookings").fetchone()[0]
+    assert count == 1
+
 
 if __name__ == "__main__":
     test_is_free()

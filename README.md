@@ -18,5 +18,10 @@ Three tables:
 - Bookings only during opening hours (08:00–20:00).
 
 ## Status
-✅ Done: database, add clients/services, booking with double-booking check, tests
-✅ Done: opening hours (08:00–20:00), then a REST API with FastAPI
+✅ Done: database layer, REST API with FastAPI (GET /services, GET /bookings,
+   POST /clients, POST /bookings with 201/400/404/409), tests with pytest
+🚧 Next:
+- Cancel a booking (DELETE /bookings/{id})
+- Show free time slots for a day
+- Run the tests automatically on GitHub (CI)
+- Deploy with Docker

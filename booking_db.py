@@ -110,6 +110,26 @@ class BookingDB():
         for service_id, name, duration, price in rows:
             result.append({"id": service_id, "name": name, "duration": duration, "price": price})
         return result
+
+    def booking_exists(self, booking_id):
+        cur = self.conn.cursor()
+        cur.execute("""SELECT client_id, service_id, payment, date, start_time, end_time
+            FROM bookings WHERE bookings.id = ?""",(booking_id,))
+        rows= cur.fetchone()
+        if rows is None:
+            return False
+        else:
+            return True
+
+    def delete_booking(self, booking_id):
+        if not self.booking_exists(booking_id):
+            return "not_found"
+        cur = self.conn.cursor()
+        cur.execute("DELETE FROM bookings WHERE bookings.id = ?",(booking_id,))
+        self.conn.commit()
+        
+        return "ok"
+
 if __name__ == "__main__":
     db = BookingDB(":memory:")
     #print(db.conn.execute("SELECT name FROM sqlite_master").fetchall())
