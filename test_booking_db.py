@@ -73,6 +73,21 @@ def test_delete_booking():
     assert db.delete_booking(99) == "not_found"
     count = db.conn.execute("SELECT COUNT(*) FROM bookings").fetchone()[0]
     assert count == 1      # Sara's booking is gone
+
+def test_free_slots():
+    db=BookingDB(":memory:")
+    db.add_client("Ali", "0151 0000000", "ali@example.com")
+    #db.add_client("Sara", "0176 0000000", "sara@example.com")
+    db.add_service("wash", 30, 25)
+    db.add_service("full wash", 60, 45)
+    db.add_booking(1, 2, "2026-11-17", "09:00")
+    #db.add_booking(1, 2, "2026-11-17", "10:00")
+    slots = db.free_slots("2026-11-17", 2)
+    assert {"free": "08:00", "until": "09:00"} in slots       # ? touches the booking
+    assert {"free": "08:30", "until": "09:30"} not in slots      # ? 🤔
+    assert {"free": "09:00", "until": "10:00"} not in slots      # ?
+    assert {"free": "09:30", "until": "10:30"} not in slots      # ? (the slot step=60 would miss!)
+    assert slots[-1] == {"free": "19:00", "until": "20:00"}     # last possible start?
 if __name__ == "__main__":
     test_is_free()
     test_add_booking()

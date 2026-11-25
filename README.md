@@ -19,9 +19,9 @@ Three tables:
 
 ## Status
 ✅ Done: database layer, REST API with FastAPI (GET /services, GET /bookings,
-   POST /clients, POST /bookings with 201/400/404/409), tests with pytest
+   POST /clients, POST /bookings with 201/400/404/409), tests with pytest,
+   - Cancel a booking (DELETE /bookings/{id})
 🚧 Next:
-- Cancel a booking (DELETE /bookings/{id})
 - Show free time slots for a day
 - Run the tests automatically on GitHub (CI)
 - Deploy with Docker

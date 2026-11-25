@@ -130,6 +130,22 @@ class BookingDB():
         self.conn.commit()
         return "ok"
 
+    def free_slots(self, date, service_id):
+        duration = self.get_duration(service_id)
+        if duration is None:
+            return None
+        start = "08:00"
+        STEP = 30
+        close = "20:00"
+        result = []
+        while True:
+            end = add_minutes(start, duration)
+            if end > close:
+                break
+            if self.is_free(date, start, end):
+                result.append({"free": start , "until": end})
+            start = add_minutes(start, STEP)
+        return result
 if __name__ == "__main__":
     db = BookingDB(":memory:")
     #print(db.conn.execute("SELECT name FROM sqlite_master").fetchall())
