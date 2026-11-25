@@ -54,3 +54,10 @@ class ClientRequest(BaseModel):
 def create_client(client: ClientRequest):
     db.add_client(client.name, client.phone, client.email)
     return{"message": "client added"}
+
+@app.delete("/bookings/{booking_id}")
+def cancel_booking(booking_id: int):
+    result= db.delete_booking(booking_id)
+    if result == "not_found":
+        raise HTTPException(status_code=404, detail="This booking doesn't exist ")
+    return {"message": "Booking deleted"}

@@ -124,10 +124,10 @@ class BookingDB():
     def delete_booking(self, booking_id):
         if not self.booking_exists(booking_id):
             return "not_found"
+
         cur = self.conn.cursor()
         cur.execute("DELETE FROM bookings WHERE bookings.id = ?",(booking_id,))
         self.conn.commit()
-        
         return "ok"
 
 if __name__ == "__main__":

@@ -104,3 +104,19 @@ def test_list_bookings():
         assert response.status_code == 200
         assert response.json() == []
 
+def test_cancel_booking():
+    main.db = BookingDB(":memory:")
+    main.db.add_client("Ali", "0150 000000", "ali@examlp.com")
+    main.db.add_service("wash", 30, 25)
+    main.db.add_booking(1, 1, "2026-11-25", "10:00")
+
+    response = client.delete("/bookings/1")
+    assert response.status_code == 200
+    assert response.json() == {"message": "Booking deleted"}
+
+    response = client.delete("/bookings/1")
+    assert response.status_code == 404
+    assert response.json() == {"detail": "This booking doesn't exist "}
+
+    response = client.delete("/bookings/abc")
+    assert response.status_code == 422

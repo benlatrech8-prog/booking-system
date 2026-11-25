@@ -66,13 +66,13 @@ def test_delete_booking():
     db.add_booking(2, 1, "2026-11-17", "11:00")    # Sara, added first
     db.add_booking(1, 2, "2026-11-17", "10:00")    # Ali, added second
     count = db.conn.execute("SELECT COUNT(*) FROM bookings").fetchone()[0]
-    assert count == 2
+    assert count == 2      # Sara and ali's booking must still be there!
 
-    db.delete_booking(1)
+    assert db.delete_booking(1) == "ok"
+    assert db.delete_booking(1) == "not_found"
+    assert db.delete_booking(99) == "not_found"
     count = db.conn.execute("SELECT COUNT(*) FROM bookings").fetchone()[0]
-    assert count == 1
-
-
+    assert count == 1      # Sara's booking is gone
 if __name__ == "__main__":
     test_is_free()
     test_add_booking()
