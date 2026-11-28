@@ -146,11 +146,13 @@ class BookingDB():
                 result.append({"free": start , "until": end})
             start = add_minutes(start, STEP)
         return result
+
 if __name__ == "__main__":
     db = BookingDB(":memory:")
     #print(db.conn.execute("SELECT name FROM sqlite_master").fetchall())
     db.add_client("nedjem", "+300000835", "ben@example.com")
     db.add_client("mays", "+49100000775", "a@example.com")
+    db.add_client("mo", "+4900000775", "mo@example.com")
     db.add_service("wash", 30, 25)
     db.add_service("full wash", 60, 45)
     #print(db.conn.execute("SELECT * FROM clients").fetchall())

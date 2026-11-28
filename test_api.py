@@ -120,3 +120,21 @@ def test_cancel_booking():
 
     response = client.delete("/bookings/abc")
     assert response.status_code == 422
+
+def test_slots_on():
+    main.db= BookingDB(":memory:")
+    main.db.add_client("Ali", "0150 000000", "ali@examlp.com")
+    main.db.add_service("wash", 30, 25)
+    main.db.add_service("full wash", 60, 45)
+    main.db.add_booking(1, 1, "2026-11-29", "10:00")
+
+    response = client.get("/slots?date=2026-11-29&service_id=2")
+    assert response.status_code == 200    # 200
+    slots = response.json()
+    assert {"free": "09:30", "until": "10:30"} not in slots      # overlaps the booking
+    assert {"free": "09:00", "until": "10:00"} in slots          # touches only
+    assert {"free": "10:00", "until": "11:00"} not in slots
+
+    response = client.get("/slots?date=2026-11-29&service_id=99")
+    assert response.status_code == 404
+    assert response.json() == {"detail": "This service doesn't exist"}

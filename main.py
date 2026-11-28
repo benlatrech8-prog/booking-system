@@ -61,3 +61,10 @@ def cancel_booking(booking_id: int):
     if result == "not_found":
         raise HTTPException(status_code=404, detail="This booking doesn't exist ")
     return {"message": "Booking deleted"}
+
+@app.get("/slots")
+def slots_on(date: str, service_id: int):
+    slots= db.free_slots(date, service_id)
+    if slots is None:
+        raise HTTPException(status_code=404, detail="This service doesn't exist")
+    return slots
