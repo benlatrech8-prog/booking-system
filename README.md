@@ -17,6 +17,16 @@ Three tables:
 - No double booking: a new booking can't overlap an existing one.
 - Bookings only during opening hours (08:00–20:00).
 
+## API
+| Method | URL | What it does |
+|---|---|---|
+| GET | /services | List the services |
+| GET | /bookings?date=YYYY-MM-DD | Bookings of one day |
+| GET | /slots?date=...&service_id=... | Free time slots |
+| POST | /clients | Add a client |
+| POST | /bookings | Book (201, 400, 404, 409) |
+| DELETE | /bookings/{id} | Cancel a booking |
+
 ## How to run
     python3 -m venv .venv
     source .venv/bin/activate
