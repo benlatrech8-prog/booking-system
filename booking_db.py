@@ -1,6 +1,8 @@
 import sqlite3
 from time_utils import add_minutes
-
+OPEN = "08:00"
+CLOSED = "20:00"
+STEP = 30
 class BookingDB():
     def __init__(self,file_name):
         self.conn= sqlite3.connect(file_name, check_same_thread=False)
@@ -75,7 +77,7 @@ class BookingDB():
         if duration is None :
             return "unknown_service"
         end_t = add_minutes(start_time, duration)
-        if start_time < "08:00" or end_t > "20:00":
+        if start_time < OPEN or end_t > CLOSED:
             return "closed"
         free = self.is_free(date,start_time, end_t)
         if not free :
@@ -134,13 +136,11 @@ class BookingDB():
         duration = self.get_duration(service_id)
         if duration is None:
             return None
-        start = "08:00"
-        STEP = 30
-        close = "20:00"
         result = []
+        start = OPEN
         while True:
             end = add_minutes(start, duration)
-            if end > close:
+            if end > CLOSED:
                 break
             if self.is_free(date, start, end):
                 result.append({"free": start , "until": end})
